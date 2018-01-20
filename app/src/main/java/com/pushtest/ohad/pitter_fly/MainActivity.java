@@ -7,26 +7,26 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
-    Pit pit;
-    Button b;
+    Pit Pit;
+    Button B;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        pit = findViewById(R.id.pit_XML);
+        Pit = findViewById(R.id.pit_XML);
 
-        b = new Button(this);
-        b.setText(R.string.Button);
-        b.setOnClickListener(new View.OnClickListener() {
+        B = new Button(this);
+        B.setText(R.string.Button);
+        B.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                pit.graph.addToPit();
+                Pit.Graph.addToPit();
             }
         });
 
-        pit.addView(b);
+        Pit.addView(B);
     }
 }

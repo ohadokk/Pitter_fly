@@ -55,7 +55,7 @@ public class Vertex extends View {
     boolean touch=false;
     //++++++++++++++++++
 
-    /*when screen boundaries is given from the pit the function
+    /*when screen boundaries is given from the Pit the function
       save them for all vertexes for mobility boundaries*/
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     public void initBoundaries(float initBottom, float initTop, float initLeft, float initRight){

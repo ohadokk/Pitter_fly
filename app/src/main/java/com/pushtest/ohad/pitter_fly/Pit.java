@@ -32,38 +32,38 @@ public class Pit extends ViewGroup{
     final static int VIEW_BOTTOM_BOUND = -150;
     //+++++++++++++++++++++++++++++++++++++++++++++++++
 
-    Context con;
-    DataStructure graph; // instance of DataStructure for managing the vertexes connectivity
-    DisplayMetrics metrics; // use to obtain screen height and width
+    Context Con;
+    DataStructure Graph; // instance of DataStructure for managing the vertexes connectivity
+    DisplayMetrics Metrics; // use to obtain screen height and width
 
     public Pit(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        con=context;
+        Con =context;
 
-        metrics = con.getResources().getDisplayMetrics(); // get screen height and width
-        this.measure(metrics.widthPixels,metrics.heightPixels); //set pit boundaries on screen boundaries
+        Metrics = Con.getResources().getDisplayMetrics(); // get screen height and width
+        this.measure(Metrics.widthPixels, Metrics.heightPixels); //set Pit boundaries on screen boundaries
 
-        graph =new DataStructure();
+        Graph =new DataStructure();
 
-        addView(new Axis(con)); //add to pit the axis
+        addView(new Axis(Con)); //add to Pit the axis
     }
 
     /*on each screen touch the dispatchTouchEvent dispatch
     the event to the vertex that is touched
-    graph connect and ChangeX is called to change edges connectivity if needed*/
+    Graph connect and ChangeX is called to change edges connectivity if needed*/
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
 
-        graph.connect();
-        graph.ChangeX();
+        Graph.connect();
+        Graph.ChangeX();
 
         return super.dispatchTouchEvent(ev);
     }
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-    /*when pit layout is changed (vertexes added to pit , initialize pit )
+    /*when Pit layout is changed (vertexes added to Pit , initialize Pit )
      onLayout is called. it set bounders of each child view*/
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     @Override
@@ -79,8 +79,8 @@ public class Pit extends ViewGroup{
 
                   ((Vertex) child).initBoundaries(b , t , l , r);
 
-                  child.layout(metrics.widthPixels / 2 + VERTEX_VIEW_LEFT_BOUND  ,metrics.heightPixels / 3,
-                               metrics.widthPixels / 2 + VERTEX_VIEW_RIGHT_BOUND ,metrics.heightPixels / 3 + VERTEX_VIEW_BUTTOM_BOUND);
+                  child.layout(Metrics.widthPixels / 2 + VERTEX_VIEW_LEFT_BOUND  , Metrics.heightPixels / 3,
+                               Metrics.widthPixels / 2 + VERTEX_VIEW_RIGHT_BOUND , Metrics.heightPixels / 3 + VERTEX_VIEW_BUTTOM_BOUND);
               }
               //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -141,14 +141,14 @@ public class Pit extends ViewGroup{
             }
         }
         //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        /*adding to the pit view group and to the DataStructure a new vertex and edge.
+        /*adding to the Pit view group and to the DataStructure a new vertex and edge.
           edge is added only if there are two vertex already */
         //+++++++++++++++++++++++++++++
         public void addToPit(){
-            Vertex v = new Vertex(con);
-            Edge e   = new Edge(con);
+            Vertex v = new Vertex(Con);
+            Edge e   = new Edge(Con);
 
-            V.put(graph.V.size(),v);
+            V.put(Graph.V.size(),v);
 
             addView(v);
 

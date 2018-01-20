@@ -23,14 +23,14 @@ public class Edge extends View {
     float Stopy;
     //+++++++++++++
 
-    Paint p;
+    Paint P;
 
     public Edge(Context context) {
         super(context);
 
-        p = new Paint();
-        p.setColor(Color.BLUE);
-        p.setStyle(Paint.Style.FILL);
+        P = new Paint();
+        P.setColor(Color.BLUE);
+        P.setStyle(Paint.Style.FILL);
 
     }
 
@@ -53,7 +53,7 @@ public class Edge extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.drawLine(Startx+ALIGN_EDGE_TO_VERTEX_CENTER ,Starty+ALIGN_EDGE_TO_VERTEX_CENTER ,
-                        Stopx+ALIGN_EDGE_TO_VERTEX_CENTER  ,Stopy+ALIGN_EDGE_TO_VERTEX_CENTER  , p );
+                        Stopx+ALIGN_EDGE_TO_VERTEX_CENTER  ,Stopy+ALIGN_EDGE_TO_VERTEX_CENTER  , P);
         this.invalidate();
     }
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

@@ -11,24 +11,27 @@ import android.view.View;
 /*
 Axis is a class to draw the axis on the screen
  it use onDraw to draw two lines
-  metrics provide the screen height and width
+  Metrics provide the screen height and width
  */
 
 public class Axis extends View {
 
     final static int ALIGN_Y_AXIS=100;
 
-    Paint p;
-    DisplayMetrics metrics;
+    Paint P;
+    Context Con;
+    DisplayMetrics Metrics;
 
 
     public Axis(Context context) {
         super(context);
 
-        metrics = context.getResources().getDisplayMetrics();// get screen boundaries
+        Con =context;
 
-        p = new Paint();
-        p.setColor(Color.GRAY);
+        Metrics = Con.getResources().getDisplayMetrics();// get screen boundaries
+
+        P = new Paint();
+        P.setColor(Color.GRAY);
 
     }
 
@@ -36,8 +39,8 @@ public class Axis extends View {
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawLine( metrics.widthPixels/2 ,0                                   ,metrics.widthPixels/2 ,      metrics.heightPixels                 , p);
-        canvas.drawLine( 0                     ,metrics.heightPixels/3+ ALIGN_Y_AXIS,       metrics.widthPixels   ,metrics.heightPixels/3+ ALIGN_Y_AXIS, p);
+        canvas.drawLine( Metrics.widthPixels/2 ,0                                   , Metrics.widthPixels/2 ,      Metrics.heightPixels                 , P);
+        canvas.drawLine( 0                     , Metrics.heightPixels/3+ ALIGN_Y_AXIS,       Metrics.widthPixels   , Metrics.heightPixels/3+ ALIGN_Y_AXIS, P);
         this.invalidate();
     }
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
