@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Pitter_fly</string>
+    <string name="Button">add</string>
 </resources>

@@ -6,15 +6,19 @@ import android.view.View;
 import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
+
     Pit pit;
     Button b;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        pit =(Pit) findViewById(R.id.pit_XML);
-        Button b = new Button(this);
-        b.setText("add");
+
+        pit = findViewById(R.id.pit_XML);
+
+        b = new Button(this);
+        b.setText(R.string.Button);
         b.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -22,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
                 pit.graph.addToPit();
             }
         });
+
         pit.addView(b);
     }
 }

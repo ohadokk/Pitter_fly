@@ -11,78 +11,48 @@ import android.widget.Button;
 import java.util.HashMap;
 
 
-/**
- * Created by ohad on 1/19/2018.
+/*
+Pit class manage all the views (vertexes ,edges ,axis ,button)
+ Pit have a class called DataStructure that manage the responsivity of each edge
+ based on vertexes X position
+
  */
 
 public class Pit extends ViewGroup{
 
-    public class DataStructure{
-        HashMap<Integer,vertex> V = new HashMap<Integer,vertex>();
-        HashMap<Integer,edge> E = new HashMap<Integer,edge>();
+    //statics to align the bound of vertex layout
+    //+++++++++++++++++++++++++++++++++++++++++++++++++
+    final static int VERTEX_VIEW_LEFT_BOUND   = -100;
+    final static int VERTEX_VIEW_RIGHT_BOUND  = 75;
+    final static int VERTEX_VIEW_BUTTOM_BOUND = 175;
+    //+++++++++++++++++++++++++++++++++++++++++++++++++
 
-        protected void connect(){
-            for(int i=0;i<E.size();++i) {
-                E.get(i).setStart(V.get(i).getx(), V.get(i).gety());
-                E.get(i).setStop(V.get(i+1).getx(), V.get(i+1).gety());
-            }
-        }
-        protected  void ChangeX(){
-            vertex v;
-            for(int i=0;i<V.size();++i){
-                if(V.get(i).isTouch()) {
-                    if (i!=V.size()-1 && V.get(i).getX() > V.get(i + 1).getX()) {
-                        v=V.get(i);
-                        V.put(i,V.get(i+1));
-                        V.put(i+1,v);
-
-                    }
-
-                    if(i!=0 && V.get(i).getX() < V.get(i-1).getX()){
-                        v=V.get(i);
-                        V.put(i,V.get(i-1));
-                        V.put(i-1,v);
-                    }
-
-                }
-            }
-        }
-        public void addToPit(){
-            vertex v = new vertex(con);
-            edge e   = new   edge(con);
-            V.put(graph.V.size(),v);
-
-            addView(v);
-
-            if(V.size()>=2) {
-                E.put(E.size(), e);
-
-                addView(e);
-            }
-
-        }
-    }
-
-    DataStructure graph;
+    //statics to align the bound of the button layout
+    //+++++++++++++++++++++++++++++++++++++++++++++++++
+    final static int VIEW_BOTTOM_BOUND = -150;
+    //+++++++++++++++++++++++++++++++++++++++++++++++++
 
     Context con;
-    DisplayMetrics metrics;
+    DataStructure graph; // instance of DataStructure for managing the vertexes connectivity
+    DisplayMetrics metrics; // use to obtain screen height and width
+
     public Pit(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         con=context;
-        metrics = con.getResources().getDisplayMetrics();
-        this.measure(metrics.widthPixels,metrics.heightPixels);
+
+        metrics = con.getResources().getDisplayMetrics(); // get screen height and width
+        this.measure(metrics.widthPixels,metrics.heightPixels); //set pit boundaries on screen boundaries
+
         graph =new DataStructure();
 
-
-        addView(new axis(con));
+        addView(new Axis(con)); //add to pit the axis
     }
 
-
-
-
-
+    /*on each screen touch the dispatchTouchEvent dispatch
+    the event to the vertex that is touched
+    graph connect and ChangeX is called to change edges connectivity if needed*/
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
 
@@ -91,26 +61,106 @@ public class Pit extends ViewGroup{
 
         return super.dispatchTouchEvent(ev);
     }
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-
-
+    /*when pit layout is changed (vertexes added to pit , initialize pit )
+     onLayout is called. it set bounders of each child view*/
+    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     @Override
     protected void onLayout (boolean changed, int l, int t, int r, int b) {
         View child;
-        for (int i = 0; i < getChildCount(); ++i) {
+
+        for (int i = 0 ; i < getChildCount() ; ++i) {
               child = getChildAt(i);
 
-              if(child instanceof vertex) {
-                  ((vertex) child).initButtom(b,t,l,r);
-                  child.layout(metrics.widthPixels / 2 - 100, metrics.heightPixels / 3 , metrics.widthPixels / 2 + 75, metrics.heightPixels / 3 +175);
+              /*if child is a vertex the layout of the child is sized to fit the vertex radius (currently 70) */
+              //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+              if(child instanceof Vertex) {
 
+                  ((Vertex) child).initBoundaries(b , t , l , r);
+
+                  child.layout(metrics.widthPixels / 2 + VERTEX_VIEW_LEFT_BOUND  ,metrics.heightPixels / 3,
+                               metrics.widthPixels / 2 + VERTEX_VIEW_RIGHT_BOUND ,metrics.heightPixels / 3 + VERTEX_VIEW_BUTTOM_BOUND);
               }
+              //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
               else if(child instanceof Button)
-                  child.layout(l,b-150,r, b);
-              else if(child instanceof edge)
-                  child.layout(l,t,r,b);
-              else child.layout(l,t,r,b-150);
+                  child.layout(l ,b + VIEW_BOTTOM_BOUND, r , b); //bound the layout from bottom to VIEW_BOTTOM_BOUND above
+              else if(child instanceof Edge)
+                  child.layout(l , t , r , b);
+              else
+                  child.layout(l , t , r ,b + VIEW_BOTTOM_BOUND); // for axis view ,bound so it wont overlap the button
         }
     }
+    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    /*the DataStructure contains two HashMaps, one for vertexes and one for edges.
+      the DataStructure is responsible for responsive connectivity
+      it does it by swapping vertexes on the hash map if one vertex X is bigger or smaller
+      then the one next to him on the map . each edge is connecting a static indexes in the vertex map
+      (E(0) connect V(0) and V(1) an so on) regardless witch vertex is in that index*/
+    //+++++++++++++++++++++++++++++++++++++++++++++++++
+    public class DataStructure{
+        HashMap<Integer, Vertex> V = new HashMap<Integer, Vertex>();
+        HashMap<Integer, Edge> E = new HashMap<Integer, Edge>();
+        /*connect the edges to the vertexes
+        done by setting the line start and end of edge canvas draw to vertexes x,y positions*/
+        //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        protected void connect(){
+            for(int i=0 ; i<E.size() ; ++i) {
+                E.get(i).setStart(V.get(i).getx()  ,V.get(i).gety()  );
+                E.get(i).setStop (V.get(i+1).getx(),V.get(i+1).gety());
+            }
+        }
+        //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+        /*swap between vertex position in the HashMap by checking if vertex is touched (vertex have a flag for touch events)
+          and this vertex X position is compered with vertex on the left and on the right of it
+          if needed two of them are swap*/
+        //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        protected  void ChangeX(){
+            Vertex v;
+
+            for(int i=0 ; i<V.size() ; ++i){
+                if(V.get(i).isTouch()) {
+
+                    if (i != V.size()-1 && V.get(i).getX() > V.get(i + 1).getX()) {
+
+                        v = V.get(i);
+                        V.put(i  , V.get(i+1));
+                        V.put(i+1, v);
+                    }
+
+                    if(i!=0 && V.get(i).getX() < V.get(i-1).getX()){
+                        v = V.get(i);
+                        V.put(i  ,V.get(i-1));
+                        V.put(i-1,v);
+                    }
+
+                }
+            }
+        }
+        //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        /*adding to the pit view group and to the DataStructure a new vertex and edge.
+          edge is added only if there are two vertex already */
+        //+++++++++++++++++++++++++++++
+        public void addToPit(){
+            Vertex v = new Vertex(con);
+            Edge e   = new Edge(con);
+
+            V.put(graph.V.size(),v);
+
+            addView(v);
+
+            if(V.size() >= 2) {
+                E.put(E.size(), e);
+
+                addView(e);
+            }
+
+        }
+        //+++++++++++++++++++++++++++++
+    }
+    //+++++++++++++++++++++++++++++++++++++++++++++++++
 
 }
